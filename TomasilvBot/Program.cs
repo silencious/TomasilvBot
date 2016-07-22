@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text;
 using System.Reflection;
+using System.Collections.Generic;
 
 using Telegram.Bot;
 using Telegram.Bot.Args;
@@ -25,19 +26,35 @@ namespace TomasilvBot {
             return char.ConvertFromUtf32(rand.Next(emoji_min, emoji_max));
         }
 
-        private static string[] names = Assembly.GetExecutingAssembly().GetManifestResourceNames();
-        private static int count = names.Length;
+        private static List<string> stickers = new List<string>(Assembly.GetExecutingAssembly().GetManifestResourceNames());
+
+        private static string[] sentences = {
+            @"I am tomasilv",
+            @"Welcome to become a Resistance, newbie!",
+            @"I am tomasilv, not tolves",
+            @"You are not the real tomasilv",
+            @"Welcome to join sh_res!",
+            @"I am the real tomasilv"};
 
         private static FileToSend Sticker(int i) {
-            var name = names[i % count];
-            var fileStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(name);
+            var sticker = stickers[(i - 1) % stickers.Count];
+            var fileStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(sticker);
             if (fileStream == null) {
                 Console.WriteLine("NULL");
             }
-            return new FileToSend(name, fileStream);
+            return new FileToSend(sticker, fileStream);
+        }
+
+        private static void DisplayStickers() {
+            foreach (var s in stickers) {
+                Console.WriteLine(s);
+            }
         }
 
         static void Main(string[] args) {
+            stickers.Sort();
+            stickers.RemoveAt(0);
+            //DisplayStickers();
             Bot.OnCallbackQuery += BotOnCallbackQueryReceived;
             Bot.OnMessage += BotOnMessageReceived;
             Bot.OnMessageEdited += BotOnMessageReceived;
@@ -48,7 +65,7 @@ namespace TomasilvBot {
             var me = Bot.GetMeAsync().Result;
 
             Console.Title = me.Username;
-
+            Console.WriteLine("Tomasilv Bot starts");
             Bot.StartReceiving();
             Console.ReadLine();
             Bot.StopReceiving();
@@ -62,36 +79,7 @@ namespace TomasilvBot {
             Console.WriteLine("Received choosen inline result: {0}", chosenInlineResultEventArgs.ChosenInlineResult.ResultId);
         }
 
-        private static async void BotOnInlineQueryReceived(object sender, InlineQueryEventArgs inlineQueryEventArgs) {
-            /*            InlineQueryResult[] results = {
-                          new InlineQueryResultLocation
-                          {
-                              Id = "1",
-                              Latitude = 40.7058316f, // displayed result
-                              Longitude = -74.2581888f,
-                              Title = "New York",
-                              InputMessageContent = new InputLocationMessageContent // message if result is selected
-                              {
-                                  Latitude = 40.7058316f,
-                                  Longitude = -74.2581888f,
-                              }
-                          },
-
-                          new InlineQueryResultLocation
-                          {
-                              Id = "2",
-                              Longitude = 52.507629f, // displayed result
-                              Latitude = 13.1449577f,
-                              Title = "Berlin",
-                              InputMessageContent = new InputLocationMessageContent // message if result is selected
-                              {
-                                  Longitude = 52.507629f,
-                                  Latitude = 13.1449577f
-                              }
-                          }
-                      };
-
-                        await Bot.AnswerInlineQueryAsync(inlineQueryEventArgs.InlineQuery.Id, results, isPersonal: true, cacheTime: 0);*/
+        private static async void BotOnInlineQueryReceived(object sender, InlineQueryEventArgs inlineQueryEventArgs){
         }
 
         private static async void BotOnMessageReceived(object sender, MessageEventArgs messageEventArgs) {
@@ -112,39 +100,43 @@ namespace TomasilvBot {
                     await Bot.SendTextMessageAsync(message.Chat.Id, reply, replyMarkup: new ReplyKeyboardHide());
                 } else {
                     string reply;
-                    switch (rand.Next(0, 2)) {
+                    switch (rand.Next(0, 5)) {
                         case 1:
                             reply = "You are not tomasilv, " + username;
+                            await Bot.SendTextMessageAsync(message.Chat.Id, reply, replyMarkup: new ReplyKeyboardHide());
+                            break;
+                        case 2:
+                            //Console.WriteLine(17);
+                            await Bot.SendStickerAsync(message.Chat.Id, Sticker(17), replyMarkup: new ReplyKeyboardHide());
+                            break;
+                        case 3:
+                            //Console.WriteLine(28);
+                            await Bot.SendStickerAsync(message.Chat.Id, Sticker(28), replyMarkup: new ReplyKeyboardHide());
+                            break;
+                        case 4:
+                            //Console.WriteLine(30);
+                            await Bot.SendStickerAsync(message.Chat.Id, Sticker(30), replyMarkup: new ReplyKeyboardHide());
                             break;
                         default:
                             reply = "You are " + username + ", not tomasilv";
+                            await Bot.SendTextMessageAsync(message.Chat.Id, reply, replyMarkup: new ReplyKeyboardHide());
                             break;
                     }
-                    await Bot.SendTextMessageAsync(message.Chat.Id, reply, replyMarkup: new ReplyKeyboardHide());
                 }
-            } else if (message.Text.StartsWith("/welcome")) {
-                var r = rand.Next(0, 4);
-                string[] replies = {@"Welcome to become a Resistance, newbie!",
-                                       @"I am tomasilv, not tolves",
-                                       @"Welcome to join sh_res!",
-                                       @"I am the real tomasilv"};
-                await Bot.SendTextMessageAsync(message.Chat.Id, replies[r] + RandEmoji(), replyMarkup: new ReplyKeyboardHide());
             } else if (message.Text.StartsWith("/join")) {
                 var reply = @"/join@werewolfIIbot";
                 await Bot.SendTextMessageAsync(message.Chat.Id, reply, replyMarkup: new ReplyKeyboardHide());
             } else if (message.Text.StartsWith("/vote")) {
                 var reply = @"/vote" + message.From.Username;
                 await Bot.SendTextMessageAsync(message.Chat.Id, reply + RandEmoji(), replyMarkup: new ReplyKeyboardHide());
+            } else if (message.Text.Contains("Lick")) {
+                await Bot.SendStickerAsync(message.Chat.Id, Sticker(34), replyMarkup: new ReplyKeyboardHide());
             } else {
-                var r = rand.Next(1, 41);
-                string[] replies = {@"I am tomasilv",
-                                       @"I am tomasilv, not tolves",
-                                       @"You are not the real tomasilv",
-                                       @"I am the real tomasilv"};
-                if (r < 37) {
+                var r = rand.Next(1, stickers.Count + sentences.Length);
+                if (r < stickers.Count) {
                     await Bot.SendStickerAsync(message.Chat.Id, Sticker(r), replyMarkup: new ReplyKeyboardHide());
                 } else {
-                    await Bot.SendTextMessageAsync(message.Chat.Id, replies[r-37] + RandEmoji(), replyMarkup: new ReplyKeyboardHide());
+                    await Bot.SendTextMessageAsync(message.Chat.Id, sentences[r - stickers.Count] + RandEmoji(), replyMarkup: new ReplyKeyboardHide());
                 }
             }
 
