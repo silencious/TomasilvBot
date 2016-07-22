@@ -1,3 +1,5 @@
 clickme - click me to become tomasilv
 help - display help info
+join - join a werewolf game
+vote - vote someone to death
 welcome - welcome newbie

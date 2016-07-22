@@ -73,10 +73,51 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <EmbeddedResource Include="Resources\Stickers\1.webp" />
+    <EmbeddedResource Include="Resources\Stickers\10.webp" />
+    <EmbeddedResource Include="Resources\Stickers\11.webp" />
+    <EmbeddedResource Include="Resources\Stickers\12.webp" />
+    <EmbeddedResource Include="Resources\Stickers\13.webp" />
+    <EmbeddedResource Include="Resources\Stickers\14.webp" />
+    <EmbeddedResource Include="Resources\Stickers\15.webp" />
+    <EmbeddedResource Include="Resources\Stickers\16.webp" />
+    <EmbeddedResource Include="Resources\Stickers\17.webp" />
+    <EmbeddedResource Include="Resources\Stickers\18.webp" />
+    <EmbeddedResource Include="Resources\Stickers\19.webp" />
+    <EmbeddedResource Include="Resources\Stickers\2.webp" />
+    <EmbeddedResource Include="Resources\Stickers\20.webp" />
+    <EmbeddedResource Include="Resources\Stickers\21.webp" />
+    <EmbeddedResource Include="Resources\Stickers\22.webp" />
+    <EmbeddedResource Include="Resources\Stickers\23.webp" />
+    <EmbeddedResource Include="Resources\Stickers\24.webp" />
+    <EmbeddedResource Include="Resources\Stickers\25.webp" />
+    <EmbeddedResource Include="Resources\Stickers\26.webp" />
+    <EmbeddedResource Include="Resources\Stickers\27.webp" />
+    <EmbeddedResource Include="Resources\Stickers\28.webp" />
+    <EmbeddedResource Include="Resources\Stickers\29.webp" />
+    <EmbeddedResource Include="Resources\Stickers\3.webp" />
+    <EmbeddedResource Include="Resources\Stickers\30.webp" />
+    <EmbeddedResource Include="Resources\Stickers\31.webp" />
+    <EmbeddedResource Include="Resources\Stickers\32.webp" />
+    <EmbeddedResource Include="Resources\Stickers\33.webp" />
+    <EmbeddedResource Include="Resources\Stickers\34.webp" />
+    <EmbeddedResource Include="Resources\Stickers\35.webp" />
+    <EmbeddedResource Include="Resources\Stickers\36.webp" />
+    <EmbeddedResource Include="Resources\Stickers\4.webp" />
+    <EmbeddedResource Include="Resources\Stickers\5.webp" />
+    <EmbeddedResource Include="Resources\Stickers\6.webp" />
+    <EmbeddedResource Include="Resources\Stickers\7.webp" />
+    <EmbeddedResource Include="Resources\Stickers\8.webp" />
+    <EmbeddedResource Include="Resources\Stickers\9.webp" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
@@ -94,6 +135,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
