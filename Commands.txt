@@ -1,0 +1,3 @@
+clickme - click me to become tomasilv
+help - display help info
+welcome - welcome newbie
