@@ -63,9 +63,89 @@ namespace TomasilvBot.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] _1 {
+        internal static byte[] _01 {
             get {
-                object obj = ResourceManager.GetObject("_1", resourceCulture);
+                object obj = ResourceManager.GetObject("_01", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] _02 {
+            get {
+                object obj = ResourceManager.GetObject("_02", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] _03 {
+            get {
+                object obj = ResourceManager.GetObject("_03", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] _04 {
+            get {
+                object obj = ResourceManager.GetObject("_04", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] _05 {
+            get {
+                object obj = ResourceManager.GetObject("_05", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] _06 {
+            get {
+                object obj = ResourceManager.GetObject("_06", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] _07 {
+            get {
+                object obj = ResourceManager.GetObject("_07", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] _08 {
+            get {
+                object obj = ResourceManager.GetObject("_08", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] _09 {
+            get {
+                object obj = ResourceManager.GetObject("_09", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -173,16 +253,6 @@ namespace TomasilvBot.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] _2 {
-            get {
-                object obj = ResourceManager.GetObject("_2", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
         internal static byte[] _20 {
             get {
                 object obj = ResourceManager.GetObject("_20", resourceCulture);
@@ -283,16 +353,6 @@ namespace TomasilvBot.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] _3 {
-            get {
-                object obj = ResourceManager.GetObject("_3", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
         internal static byte[] _30 {
             get {
                 object obj = ResourceManager.GetObject("_30", resourceCulture);
@@ -356,66 +416,6 @@ namespace TomasilvBot.Properties {
         internal static byte[] _36 {
             get {
                 object obj = ResourceManager.GetObject("_36", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] _4 {
-            get {
-                object obj = ResourceManager.GetObject("_4", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] _5 {
-            get {
-                object obj = ResourceManager.GetObject("_5", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] _6 {
-            get {
-                object obj = ResourceManager.GetObject("_6", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] _7 {
-            get {
-                object obj = ResourceManager.GetObject("_7", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] _8 {
-            get {
-                object obj = ResourceManager.GetObject("_8", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] _9 {
-            get {
-                object obj = ResourceManager.GetObject("_9", resourceCulture);
                 return ((byte[])(obj));
             }
         }
