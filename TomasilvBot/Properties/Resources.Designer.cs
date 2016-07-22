@@ -419,5 +419,19 @@ namespace TomasilvBot.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to clickme - click me to become tomasilv
+        ///help - display help info
+        ///join - join a werewolf game
+        ///vote - vote someone to death
+        ///welcome - welcome newbie
+        ///.
+        /// </summary>
+        internal static string Commands {
+            get {
+                return ResourceManager.GetString("Commands", resourceCulture);
+            }
+        }
     }
 }

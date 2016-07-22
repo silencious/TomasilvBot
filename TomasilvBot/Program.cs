@@ -20,14 +20,6 @@ namespace TomasilvBot {
         private static readonly TelegramBotClient Bot = new TelegramBotClient("257573874:AAH05EerVbxiTj6wczqiitnHhM2Yp-aqECA");
         private static Random rand = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
 
-        private static int emoji_min = 0x1F600;
-        private static int emoji_max = 0x1F650;
-        private static string RandEmoji() {
-            return char.ConvertFromUtf32(rand.Next(emoji_min, emoji_max));
-        }
-
-        private static List<string> stickers = new List<string>(Assembly.GetExecutingAssembly().GetManifestResourceNames());
-
         private static string[] sentences = {
             @"I am tomasilv",
             @"Welcome to become a Resistance, newbie!",
@@ -36,6 +28,15 @@ namespace TomasilvBot {
             @"Welcome to join sh_res!",
             @"I am the real tomasilv"};
 
+        private static string werewolf_bot = "werewolfIIbot";
+
+        private static int emoji_min = 0x1F600;
+        private static int emoji_max = 0x1F650;
+        private static string RandEmoji() {
+            return char.ConvertFromUtf32(rand.Next(emoji_min, emoji_max));
+        }
+
+        private static List<string> stickers = new List<string>(Assembly.GetExecutingAssembly().GetManifestResourceNames());
         private static FileToSend Sticker(int i) {
             var sticker = stickers[(i - 1) % stickers.Count];
             var fileStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(sticker);
@@ -93,7 +94,7 @@ namespace TomasilvBot {
             } else if (message.Text.StartsWith("/ClickMeToBecomeTomasilv")) {
                 var username = message.From.Username;
                 if ("tomasilv".Equals(username, StringComparison.OrdinalIgnoreCase)) {
-                    var reply = "You are the real tomasilv";
+                    var reply = "You are the real tomasilv @"+username;
                     await Bot.SendTextMessageAsync(message.Chat.Id, reply, replyMarkup: new ReplyKeyboardHide());
                 } else if (username == null || username.Trim() == "") {
                     var reply = "Ah, you don't have a username!\nIt's a shame you can't become tomasilv";
@@ -102,7 +103,7 @@ namespace TomasilvBot {
                     string reply;
                     switch (rand.Next(0, 5)) {
                         case 1:
-                            reply = "You are not tomasilv, " + username;
+                            reply = "You are not tomasilv, @" + username;
                             await Bot.SendTextMessageAsync(message.Chat.Id, reply, replyMarkup: new ReplyKeyboardHide());
                             break;
                         case 2:
@@ -118,13 +119,13 @@ namespace TomasilvBot {
                             await Bot.SendStickerAsync(message.Chat.Id, Sticker(30), replyMarkup: new ReplyKeyboardHide());
                             break;
                         default:
-                            reply = "You are " + username + ", not tomasilv";
+                            reply = "You are @" + username + ", not tomasilv";
                             await Bot.SendTextMessageAsync(message.Chat.Id, reply, replyMarkup: new ReplyKeyboardHide());
                             break;
                     }
                 }
             } else if (message.Text.StartsWith("/join")) {
-                var reply = @"/join@werewolfIIbot";
+                var reply = @"/join@"+werewolf_bot;
                 await Bot.SendTextMessageAsync(message.Chat.Id, reply, replyMarkup: new ReplyKeyboardHide());
             } else if (message.Text.StartsWith("/vote")) {
                 var reply = @"/vote" + message.From.Username;
