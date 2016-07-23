@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Threading;
 
 using Telegram.Bot;
 using Telegram.Bot.Args;
@@ -18,6 +19,15 @@ using Telegram.Bot.Types.ReplyMarkups;
 namespace TomasilvBot {
     class Program {
         private static readonly TelegramBotClient Bot = new TelegramBotClient("257573874:AAH05EerVbxiTj6wczqiitnHhM2Yp-aqECA");
+        private static AutoResetEvent autoEvent = new AutoResetEvent(false);
+        private static string logFile = "tomasilv.log";
+        private static StreamWriter logger = System.IO.File.AppendText(logFile);
+
+        private static void log(string s) {
+            logger.WriteLine("{0}\t{1}", DateTime.Now.ToString(), s);
+            logger.Flush();
+        }
+
         private static Random rand = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
 
         private static string[] sentences = {
@@ -41,14 +51,14 @@ namespace TomasilvBot {
             var sticker = stickers[(i - 1) % stickers.Count];
             var fileStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(sticker);
             if (fileStream == null) {
-                Console.WriteLine("NULL");
+                //Console.WriteLine("NULL");
             }
             return new FileToSend(sticker, fileStream);
         }
 
         private static void DisplayStickers() {
             foreach (var s in stickers) {
-                Console.WriteLine(s);
+                //Console.WriteLine(s);
             }
         }
 
@@ -65,10 +75,13 @@ namespace TomasilvBot {
 
             var me = Bot.GetMeAsync().Result;
 
-            Console.Title = me.Username;
-            Console.WriteLine("Tomasilv Bot starts");
+            //Console.Title = me.Username;
+            log("Tomasilv Bot starts");
             Bot.StartReceiving();
-            Console.ReadLine();
+            while (true) {
+                autoEvent.WaitOne();
+            }
+            //Console.ReadLine();
             Bot.StopReceiving();
         }
 
@@ -77,11 +90,11 @@ namespace TomasilvBot {
         }
 
         private static void BotOnChosenInlineResultReceived(object sender, ChosenInlineResultEventArgs chosenInlineResultEventArgs) {
-            Console.WriteLine("Received choosen inline result: {0}", chosenInlineResultEventArgs.ChosenInlineResult.ResultId);
+            //Console.WriteLine("Received choosen inline result: {0}", chosenInlineResultEventArgs.ChosenInlineResult.ResultId);
         }
 
         private static async void BotOnInlineQueryReceived(object sender, InlineQueryEventArgs inlineQueryEventArgs) {
-            Console.WriteLine("Received inline queary: {0}", inlineQueryEventArgs.InlineQuery.Query.ToString());
+            //Console.WriteLine("Received inline queary: {0}", inlineQueryEventArgs.InlineQuery.Query.ToString());
         }
 
         private static async void BotOnMessageReceived(object sender, MessageEventArgs messageEventArgs) {
