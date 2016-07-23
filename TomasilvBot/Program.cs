@@ -73,14 +73,15 @@ namespace TomasilvBot {
         }
 
         private static void BotOnReceiveError(object sender, ReceiveErrorEventArgs receiveErrorEventArgs) {
-            Debugger.Break();
+            //Debugger.Break();
         }
 
         private static void BotOnChosenInlineResultReceived(object sender, ChosenInlineResultEventArgs chosenInlineResultEventArgs) {
             Console.WriteLine("Received choosen inline result: {0}", chosenInlineResultEventArgs.ChosenInlineResult.ResultId);
         }
 
-        private static async void BotOnInlineQueryReceived(object sender, InlineQueryEventArgs inlineQueryEventArgs){
+        private static async void BotOnInlineQueryReceived(object sender, InlineQueryEventArgs inlineQueryEventArgs) {
+            Console.WriteLine("Received inline queary: {0}", inlineQueryEventArgs.InlineQuery.Query.ToString());
         }
 
         private static async void BotOnMessageReceived(object sender, MessageEventArgs messageEventArgs) {
@@ -94,7 +95,7 @@ namespace TomasilvBot {
             } else if (message.Text.StartsWith("/ClickMeToBecomeTomasilv")) {
                 var username = message.From.Username;
                 if ("tomasilv".Equals(username, StringComparison.OrdinalIgnoreCase)) {
-                    var reply = "You are the real tomasilv @"+username;
+                    var reply = "You are the real tomasilv @" + username;
                     await Bot.SendTextMessageAsync(message.Chat.Id, reply, replyMarkup: new ReplyKeyboardHide());
                 } else if (username == null || username.Trim() == "") {
                     var reply = "Ah, you don't have a username!\nIt's a shame you can't become tomasilv";
@@ -125,7 +126,7 @@ namespace TomasilvBot {
                     }
                 }
             } else if (message.Text.StartsWith("/join")) {
-                var reply = @"/join@"+werewolf_bot;
+                var reply = @"/join@" + werewolf_bot;
                 await Bot.SendTextMessageAsync(message.Chat.Id, reply, replyMarkup: new ReplyKeyboardHide());
             } else if (message.Text.StartsWith("/vote")) {
                 var reply = @"/vote" + message.From.Username;
