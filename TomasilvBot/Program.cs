@@ -30,6 +30,10 @@ namespace TomasilvBot {
 
         private static Random rand = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
 
+        private static float randf(float floor = 0.0f, float ceil = 1.0f) {
+            return (float)rand.NextDouble() * (ceil - floor) + floor;
+        }
+
         private static string[] sentences = {
             @"I am tomasilv",
             @"Welcome to become a Resistance, newbie!",
@@ -61,6 +65,7 @@ namespace TomasilvBot {
                 //Console.WriteLine(s);
             }
         }
+        private static char[] delimiterChars = { ' ', ',', '.', ':', '\t', '\n', '\r' };
 
         static void Main(string[] args) {
             stickers.Sort();
@@ -99,77 +104,87 @@ namespace TomasilvBot {
 
         private static async void BotOnMessageReceived(object sender, MessageEventArgs messageEventArgs) {
             var message = messageEventArgs.Message;
-
+            var text = message.Text;
             if (message == null || message.Type != MessageType.TextMessage) return;
 
-            if (message.Text.StartsWith("/clickme")) {
+            if (text.StartsWith("/clickme")) {
                 var reply = @"/ClickMeToBecomeTomasilv";
-                await Bot.SendTextMessageAsync(message.Chat.Id, reply, replyMarkup: new ReplyKeyboardHide());
-            } else if (message.Text.StartsWith("/ClickMeToBecomeTomasilv")) {
+                await Bot.SendTextMessageAsync(message.Chat.Id, reply + RandEmoji());
+            } else if (text.StartsWith("/ClickMeToBecomeTomasilv")) {
                 var username = message.From.Username;
                 if ("tomasilv".Equals(username, StringComparison.OrdinalIgnoreCase)) {
                     var reply = "You are the real tomasilv @" + username;
-                    await Bot.SendTextMessageAsync(message.Chat.Id, reply, replyMarkup: new ReplyKeyboardHide());
+                    await Bot.SendTextMessageAsync(message.Chat.Id, reply+RandEmoji());
                 } else if (username == null || username.Trim() == "") {
                     var reply = "Ah, you don't have a username!\nIt's a shame you can't become tomasilv";
-                    await Bot.SendTextMessageAsync(message.Chat.Id, reply, replyMarkup: new ReplyKeyboardHide());
+                    await Bot.SendTextMessageAsync(message.Chat.Id, reply + RandEmoji());
                 } else {
                     string reply;
                     switch (rand.Next(0, 5)) {
                         case 1:
                             reply = "You are not tomasilv, @" + username;
-                            await Bot.SendTextMessageAsync(message.Chat.Id, reply, replyMarkup: new ReplyKeyboardHide());
+                            await Bot.SendTextMessageAsync(message.Chat.Id, reply);
                             break;
                         case 2:
                             //Console.WriteLine(17);
-                            await Bot.SendStickerAsync(message.Chat.Id, Sticker(17), replyMarkup: new ReplyKeyboardHide());
+                            await Bot.SendStickerAsync(message.Chat.Id, Sticker(17));
                             break;
                         case 3:
                             //Console.WriteLine(28);
-                            await Bot.SendStickerAsync(message.Chat.Id, Sticker(28), replyMarkup: new ReplyKeyboardHide());
+                            await Bot.SendStickerAsync(message.Chat.Id, Sticker(28));
                             break;
                         case 4:
                             //Console.WriteLine(30);
-                            await Bot.SendStickerAsync(message.Chat.Id, Sticker(30), replyMarkup: new ReplyKeyboardHide());
+                            await Bot.SendStickerAsync(message.Chat.Id, Sticker(30));
                             break;
                         default:
                             reply = "You are @" + username + ", not tomasilv";
-                            await Bot.SendTextMessageAsync(message.Chat.Id, reply, replyMarkup: new ReplyKeyboardHide());
+                            await Bot.SendTextMessageAsync(message.Chat.Id, reply);
                             break;
                     }
                 }
-            } else if (message.Text.StartsWith("/join")) {
+            } else if (text.StartsWith("/join")) {
                 var reply = @"/join@" + werewolf_bot;
-                await Bot.SendTextMessageAsync(message.Chat.Id, reply, replyMarkup: new ReplyKeyboardHide());
-            } else if (message.Text.StartsWith("/vote")) {
+                await Bot.SendTextMessageAsync(message.Chat.Id, reply);
+            } else if (text.StartsWith("/lick")) {
+                await Bot.SendStickerAsync(message.Chat.Id, Sticker(34));
+            }else if (text.StartsWith("/randf")) {    // rand float
+                string[] words = text.Split(delimiterChars);
+                float min, max;
+                if (words.Length >= 3 && float.TryParse(words[1], out min) && float.TryParse(words[2], out max)) {
+                    float result = randf(min, max);
+                    int accuracy;
+                    if (!int.TryParse(words[0].Substring("/randf".Length), out accuracy)) {
+                        accuracy = 2;
+                    }
+                    await Bot.SendTextMessageAsync(message.Chat.Id, result.ToString("F" + accuracy));
+                } else {
+                    // display help message or ui 
+                    var reply = "use: /randf(n) min max";
+                    await Bot.SendTextMessageAsync(message.Chat.Id, reply);
+                }
+            } else if (text.StartsWith("/rand")) {  // rand int
+                string[] words = text.Split(delimiterChars);
+                int min, max;
+                if (words.Length >= 3 && int.TryParse(words[1], out min) && int.TryParse(words[2], out max)) {
+                    int result = rand.Next(min, max);
+                    await Bot.SendTextMessageAsync(message.Chat.Id, result.ToString());
+                } else {
+                    // display help message or ui 
+                    var reply = "use: /rand min max";
+                    await Bot.SendTextMessageAsync(message.Chat.Id, reply);
+                }
+            } else if (text.StartsWith("/vote")) {
                 var reply = @"/vote" + message.From.Username;
-                await Bot.SendTextMessageAsync(message.Chat.Id, reply + RandEmoji(), replyMarkup: new ReplyKeyboardHide());
-            } else if (message.Text.Contains("Lick")) {
-                await Bot.SendStickerAsync(message.Chat.Id, Sticker(34), replyMarkup: new ReplyKeyboardHide());
+                await Bot.SendTextMessageAsync(message.Chat.Id, reply + RandEmoji());
             } else {
                 var r = rand.Next(1, stickers.Count + sentences.Length);
                 if (r < stickers.Count) {
-                    await Bot.SendStickerAsync(message.Chat.Id, Sticker(r), replyMarkup: new ReplyKeyboardHide());
+                    await Bot.SendStickerAsync(message.Chat.Id, Sticker(r));
                 } else {
-                    await Bot.SendTextMessageAsync(message.Chat.Id, sentences[r - stickers.Count] + RandEmoji(), replyMarkup: new ReplyKeyboardHide());
+                    await Bot.SendTextMessageAsync(message.Chat.Id, sentences[r - stickers.Count] + RandEmoji());
                 }
             }
-
-            /*else if (message.Text.StartsWith("/photo")) // send a photo
-                                              {
-                                        await Bot.SendChatActionAsync(message.Chat.Id, ChatAction.UploadPhoto);
-
-                                        const string file = @"<FilePath>";
-
-                                        var fileName = file.Split('\\').Last();
-
-                                        using (var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                                            var fts = new FileToSend(fileName, fileStream);
-
-                                            await Bot.SendPhotoAsync(message.Chat.Id, fts, "Nice Picture");
-                                        }
-                                    } 
-                        */
         }
 
         private static async void BotOnCallbackQueryReceived(object sender, CallbackQueryEventArgs callbackQueryEventArgs) {
