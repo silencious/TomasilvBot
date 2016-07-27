@@ -1,7 +1,8 @@
 clickme - click me to become tomasilv
 help - display help info
 join - join a werewolf game
+lick - lick tomasilv
 rand - generate a random number
-randf - generate a random float number 
+randf - generate a random float number
 vote - vote someone to death
 welcome - welcome newbie
