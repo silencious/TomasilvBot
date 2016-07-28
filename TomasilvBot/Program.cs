@@ -41,11 +41,21 @@ namespace TomasilvBot {
 
         private static string rollDice(int value, int count = 1, int add = 0) {
             int ceil = value + 1;
-            string ret = (randi(1, ceil)+add).ToString();
+            int acc = randi(1, ceil);
+            string reply = acc.ToString();
             for (int i = 1; i < count; i++) {
-                ret = ret + ' ' + (randi(1, ceil)+add).ToString();
+                int n = randi(1, ceil);
+                acc += n;
+                reply = reply + '+' + n.ToString();
             }
-            return ret;
+            if (add > 0) {
+                acc += add;
+                reply = reply + '+' + add.ToString();
+            }
+            if (count > 1 || add > 0) {
+                reply = reply + '=' + acc.ToString();
+            }
+            return reply;
         }
 
         private static string[] sentences = {
@@ -203,7 +213,7 @@ namespace TomasilvBot {
                 string[] args = text.Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
                 string reply;
                 if (args.Length >= 2) {
-                    int value, count, add=0;
+                    int value, count, add = 0;
                     if (!int.TryParse(args[0], out count)) {
                         count = 1;
                     }
