@@ -7,6 +7,7 @@ using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 using Telegram.Bot;
 using Telegram.Bot.Args;
@@ -30,8 +31,21 @@ namespace TomasilvBot {
 
         private static Random rand = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
 
+        private static int randi(int floor = 0, int ceil = 10) {
+            return floor < ceil ? rand.Next(floor, ceil) : rand.Next(ceil, floor);
+        }
+
         private static float randf(float floor = 0.0f, float ceil = 1.0f) {
             return (float)rand.NextDouble() * (ceil - floor) + floor;
+        }
+
+        private static string rollDice(int value, int count = 1) {
+            int ceil = value + 1;
+            string ret = randi(1, ceil).ToString();
+            for (int i = 1; i < count; i++) {
+                ret = ret + ' ' + randi(1, ceil).ToString();
+            }
+            return ret;
         }
 
         private static string[] sentences = {
@@ -47,7 +61,7 @@ namespace TomasilvBot {
         private static int emoji_min = 0x1F600;
         private static int emoji_max = 0x1F650;
         private static string RandEmoji() {
-            return char.ConvertFromUtf32(rand.Next(emoji_min, emoji_max));
+            return char.ConvertFromUtf32(randi(emoji_min, emoji_max));
         }
 
         private static List<string> stickers = new List<string>(Assembly.GetExecutingAssembly().GetManifestResourceNames());
@@ -110,17 +124,18 @@ namespace TomasilvBot {
             if (text.StartsWith("/clickme")) {
                 var reply = @"/ClickMeToBecomeTomasilv";
                 await Bot.SendTextMessageAsync(message.Chat.Id, reply + RandEmoji());
+                return;
             } else if (text.StartsWith("/ClickMeToBecomeTomasilv")) {
                 var username = message.From.Username;
                 if ("tomasilv".Equals(username, StringComparison.OrdinalIgnoreCase)) {
                     var reply = "You are the real tomasilv @" + username;
-                    await Bot.SendTextMessageAsync(message.Chat.Id, reply+RandEmoji());
+                    await Bot.SendTextMessageAsync(message.Chat.Id, reply + RandEmoji());
                 } else if (username == null || username.Trim() == "") {
                     var reply = "Ah, you don't have a username!\nIt's a shame you can't become tomasilv";
                     await Bot.SendTextMessageAsync(message.Chat.Id, reply + RandEmoji());
                 } else {
                     string reply;
-                    switch (rand.Next(0, 5)) {
+                    switch (randi(0, 5)) {
                         case 1:
                             reply = "You are not tomasilv, @" + username;
                             await Bot.SendTextMessageAsync(message.Chat.Id, reply);
@@ -143,12 +158,15 @@ namespace TomasilvBot {
                             break;
                     }
                 }
+                return;
             } else if (text.StartsWith("/join")) {
                 var reply = @"/join@" + werewolf_bot;
                 await Bot.SendTextMessageAsync(message.Chat.Id, reply);
+                return;
             } else if (text.StartsWith("/lick")) {
                 await Bot.SendStickerAsync(message.Chat.Id, Sticker(34));
-            }else if (text.StartsWith("/randf")) {    // rand float
+                return;
+            } else if (text.StartsWith("/randf")) {    // rand float
                 string[] words = text.Split(delimiterChars);
                 float min, max;
                 if (words.Length >= 3 && float.TryParse(words[1], out min) && float.TryParse(words[2], out max)) {
@@ -163,27 +181,46 @@ namespace TomasilvBot {
                     var reply = "use: /randf(n) min max";
                     await Bot.SendTextMessageAsync(message.Chat.Id, reply);
                 }
+                return;
             } else if (text.StartsWith("/rand")) {  // rand int
                 string[] words = text.Split(delimiterChars);
                 int min, max;
                 if (words.Length >= 3 && int.TryParse(words[1], out min) && int.TryParse(words[2], out max)) {
-                    int result = rand.Next(min, max);
+                    int result = randi(min, max);
                     await Bot.SendTextMessageAsync(message.Chat.Id, result.ToString());
                 } else {
                     // display help message or ui 
                     var reply = "use: /rand min max";
                     await Bot.SendTextMessageAsync(message.Chat.Id, reply);
                 }
+                return;
             } else if (text.StartsWith("/vote")) {
                 var reply = @"/vote" + message.From.Username;
                 await Bot.SendTextMessageAsync(message.Chat.Id, reply + RandEmoji());
-            } else {
-                var r = rand.Next(1, stickers.Count + sentences.Length);
-                if (r < stickers.Count) {
-                    await Bot.SendStickerAsync(message.Chat.Id, Sticker(r));
-                } else {
-                    await Bot.SendTextMessageAsync(message.Chat.Id, sentences[r - stickers.Count] + RandEmoji());
+                return;
+            } else if (Regex.IsMatch(text, @"^/\d*d\d+")) {
+                string[] pair = text.Split('d');
+                string reply;
+                if (pair.Length >= 2) {
+                    int count, value;
+                    if (!int.TryParse(pair[0].Substring(1), out count)) {
+                        count = 1;
+                    }
+                    if (int.TryParse(pair[1], out value)) {
+                        reply = rollDice(value, count);
+                    } else {
+                        reply = "Invalid dice format, use examples: 2d4, d20";
+                    }
+                    await Bot.SendTextMessageAsync(message.Chat.Id, reply);
+                    return;
                 }
+            }
+            // no matching pattern, default reply
+            var r = randi(1, stickers.Count + sentences.Length);
+            if (r < stickers.Count) {
+                await Bot.SendStickerAsync(message.Chat.Id, Sticker(r));
+            } else {
+                await Bot.SendTextMessageAsync(message.Chat.Id, sentences[r - stickers.Count] + RandEmoji());
             }
         }
 
