@@ -39,11 +39,11 @@ namespace TomasilvBot {
             return (float)rand.NextDouble() * (ceil - floor) + floor;
         }
 
-        private static string rollDice(int value, int count = 1) {
+        private static string rollDice(int value, int count = 1, int add = 0) {
             int ceil = value + 1;
-            string ret = randi(1, ceil).ToString();
+            string ret = (randi(1, ceil)+add).ToString();
             for (int i = 1; i < count; i++) {
-                ret = ret + ' ' + randi(1, ceil).ToString();
+                ret = ret + ' ' + (randi(1, ceil)+add).ToString();
             }
             return ret;
         }
@@ -198,18 +198,24 @@ namespace TomasilvBot {
                 var reply = @"/vote" + message.From.Username;
                 await Bot.SendTextMessageAsync(message.Chat.Id, reply + RandEmoji());
                 return;
-            } else if (Regex.IsMatch(text, @"^/\d*d\d+")) {
-                string[] pair = text.Split('d');
+            } else if (Regex.IsMatch(text, @"^/\d*d\d+[\+\d+]?")) {
+                char[] delimiter = { '/', 'd', '+' };
+                string[] args = text.Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
                 string reply;
-                if (pair.Length >= 2) {
-                    int count, value;
-                    if (!int.TryParse(pair[0].Substring(1), out count)) {
+                if (args.Length >= 2) {
+                    int value, count, add=0;
+                    if (!int.TryParse(args[0], out count)) {
                         count = 1;
                     }
-                    if (int.TryParse(pair[1], out value)) {
-                        reply = rollDice(value, count);
+                    if (int.TryParse(args[1], out value) || value < 1) {
+                        if (args.Length > 2) {
+                            if (!int.TryParse(args[2], out add)) {
+                                add = 0;
+                            }
+                        }
+                        reply = rollDice(value, count, add);
                     } else {
-                        reply = "Invalid dice format, use examples: 2d4, d20";
+                        reply = "Invalid dice format, use examples: 2d4, d20, 3d2+1";
                     }
                     await Bot.SendTextMessageAsync(message.Chat.Id, reply);
                     return;
