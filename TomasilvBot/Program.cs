@@ -39,14 +39,21 @@ namespace TomasilvBot {
             return (float)rand.NextDouble() * (ceil - floor) + floor;
         }
 
-        private static string rollDice(int value, int count = 1, int add = 0) {
+        private static string rollDice(int value, int count = 1, int add = 0, int take = int.MaxValue) {
             int ceil = value + 1;
-            int acc = randi(1, ceil);
-            string reply = acc.ToString();
-            for (int i = 1; i < count; i++) {
-                int n = randi(1, ceil);
-                acc += n;
-                reply = reply + '+' + n.ToString();
+            List<int> l = new List<int>();
+            string reply = "";
+            for (int i = 0; i < count; i++) {
+                l.Add(randi(1, ceil));
+            }
+            if (count > take) {
+                l = l.OrderByDescending(i => i).Take(take).ToList();
+            }
+            int acc = l[0];
+            reply += acc.ToString();
+            for (int i = 1; i < l.Count; i++) {
+                acc += l[i];
+                reply = reply + '+' + l[i].ToString();
             }
             if (add > 0) {
                 acc += add;
@@ -208,28 +215,41 @@ namespace TomasilvBot {
                 var reply = @"/vote" + message.From.Username;
                 await Bot.SendTextMessageAsync(message.Chat.Id, reply + RandEmoji());
                 return;
-            } else if (Regex.IsMatch(text, @"^/\d*d\d+[\+\d+]?")) {
-                char[] delimiter = { '/', 'd', '+' };
+            } else if (Regex.IsMatch(text, @"^/\d*d\d+(k\d+)?(\+\d+)?")) {
+                char[] delimiter = { '/', 'd', 'k', '+' };
                 string[] args = text.Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
-                string reply;
-                if (args.Length >= 2) {
-                    int value, count, add = 0;
-                    if (!int.TryParse(args[0], out count)) {
-                        count = 1;
-                    }
-                    if (int.TryParse(args[1], out value) || value < 1) {
-                        if (args.Length > 2) {
-                            if (!int.TryParse(args[2], out add)) {
-                                add = 0;
+                string reply = "Invalid dice format, use examples: 2d4, d20, 3d2+1, 3d20k1";
+                int value, count;
+                switch (args.Length) {
+                    case 1:
+                        if (int.TryParse(args[0], out value)) {
+                            reply = rollDice(value);
+                        }
+                        break;
+                    case 2:
+                        if (int.TryParse(args[0], out count) && int.TryParse(args[1], out value)) {
+                            reply = rollDice(value, count);
+                        }
+                        break;
+                    case 3:
+                        int arg2;
+                        if (int.TryParse(args[0], out count) && int.TryParse(args[1], out value) && int.TryParse(args[2], out arg2)) {
+                            if (text.Contains('k')) {
+                                reply = rollDice(value, count, 0, arg2);
+                            } else if (text.Contains('+')) {
+                                reply = rollDice(value, count, arg2, count);
                             }
                         }
-                        reply = rollDice(value, count, add);
-                    } else {
-                        reply = "Invalid dice format, use examples: 2d4, d20, 3d2+1";
-                    }
-                    await Bot.SendTextMessageAsync(message.Chat.Id, reply);
-                    return;
+                        break;
+                    case 4:
+                        int take, add;                        
+                        if (int.TryParse(args[0], out count) && int.TryParse(args[1], out value) && int.TryParse(args[2], out take) && int.TryParse(args[3], out add)) {
+                            reply = rollDice(value, count, add, take);
+                        }
+                        break;
                 }
+                await Bot.SendTextMessageAsync(message.Chat.Id, reply);
+                return;
             }
             // no matching pattern, default reply
             var r = randi(1, stickers.Count + sentences.Length);
