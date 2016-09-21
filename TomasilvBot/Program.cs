@@ -71,9 +71,14 @@ namespace TomasilvBot {
 			if (!ChatPool.IsIdle(message.Chat.Id)) {
 				ChatPool.AddMsg(message);
 				message = ChatPool.PickMsg();
-				if (message == null) {
+				while (message == null) {
 					Thread.Sleep(34);	// about 30 msgs per sec
+					message = ChatPool.PickMsg();					
 				}
+			}
+			// if out of date - over 1 hour
+			if (DateTime.UtcNow.Subtract(message.Date).TotalHours > 1.0f) {
+				return;
 			}
 
 			switch (message.Type) {
