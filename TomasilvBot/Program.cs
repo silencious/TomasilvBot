@@ -73,7 +73,7 @@ namespace TomasilvBot {
 				message = ChatPool.PickMsg();
 				while (message == null) {
 					Thread.Sleep(34);	// about 30 msgs per sec
-					message = ChatPool.PickMsg();					
+					message = ChatPool.PickMsg();
 				}
 			}
 			// if out of date - over 1 hour
@@ -99,9 +99,16 @@ namespace TomasilvBot {
 		}
 		private static async void DoServiceMessage(Message message) {
 			if (message.NewChatMember != null) {
+				var groupId = message.Chat.Id;
 				var user = message.NewChatMember;
-				string reply = "/welcome @" + user.Username;
-				await Bot.SendTextMessageAsync(message.Chat.Id, reply + Util.RandEmoji());
+				if (WelcomeDic.Contains(groupId)) {
+					string reply = WelcomeDic.GetWelcomeMsg(groupId).Replace("$name", user.Username);
+					await Bot.SendTextMessageAsync(message.Chat.Id, reply, false, false, 0, null, ParseMode.Markdown);
+				} else {
+					string reply = "/welcome @" + user.Username;
+					await Bot.SendTextMessageAsync(message.Chat.Id, reply + Util.RandEmoji());
+				}
+				return;
 			}
 		}
 
@@ -113,6 +120,10 @@ namespace TomasilvBot {
 				return;
 			} else if (text.StartsWith("/ClickMeToBecomeTomasilv")) {
 				ClickMe(message);
+				return;
+			} else if (text.StartsWith("/echo")) {
+				var reply = text.Substring("/echo".Length).Trim().Replace("$name", message.From.Username);
+				await Bot.SendTextMessageAsync(message.Chat.Id, reply, false, false, 0, null, ParseMode.Markdown);
 				return;
 			} else if (text.StartsWith("/join")) {
 				var reply = @"/join@" + werewolf_bot;
@@ -150,8 +161,19 @@ namespace TomasilvBot {
 				}
 				return;
 			} else if (text.StartsWith("/vote")) {
-				var reply = @"/vote" + message.From.Username;
+				var reply = @"/vote@" + message.From.Username;
 				await Bot.SendTextMessageAsync(message.Chat.Id, reply + Util.RandEmoji());
+				return;
+			} else if (text.StartsWith("/welcome")) {
+				if (message.Chat.Type != ChatType.Group && message.Chat.Type != ChatType.Supergroup) {
+					var reply = @"Add me to a group to use this feature";
+					await Bot.SendTextMessageAsync(message.Chat.Id, reply + Util.RandEmoji());
+				} else {
+					var msg = text.Substring("/welcome".Length).Trim();
+					WelcomeDic.SetWelcomeMsg(message.Chat.Id, msg);
+					var reply = "Custom welcome message saved!";
+					await Bot.SendTextMessageAsync(message.Chat.Id, reply + Util.RandEmoji(), false, false, message.MessageId);
+				}
 				return;
 			} else if (Regex.IsMatch(text, @"^/\d*d\d+(k\d+)?(\+\d+)?")) {
 				RollDice(message);

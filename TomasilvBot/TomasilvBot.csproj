@@ -84,6 +84,7 @@
     </Compile>
     <Compile Include="TimeCounter.cs" />
     <Compile Include="Util.cs" />
+    <Compile Include="WelcomeDic.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
