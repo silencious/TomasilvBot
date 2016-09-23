@@ -102,7 +102,7 @@ namespace TomasilvBot {
 				var groupId = message.Chat.Id;
 				var user = message.NewChatMember;
 				if (WelcomeDic.Contains(groupId)) {
-					string reply = WelcomeDic.GetWelcomeMsg(groupId).Replace("$name", user.Username);
+					string reply = WelcomeDic.GetWelcomeMsg(groupId).Replace("$name", user.Username).Replace("$title", message.Chat.Title);
 					await Bot.SendTextMessageAsync(message.Chat.Id, reply, false, false, 0, null, ParseMode.Markdown);
 				} else {
 					string reply = "/welcome @" + user.Username;
@@ -170,8 +170,8 @@ namespace TomasilvBot {
 					await Bot.SendTextMessageAsync(message.Chat.Id, reply + Util.RandEmoji());
 				} else {
 					var msg = text.Substring("/welcome".Length).Trim();
-					WelcomeDic.SetWelcomeMsg(message.Chat.Id, msg);
-					var reply = "Custom welcome message saved!";
+					bool result = WelcomeDic.SetWelcomeMsg(message.Chat.Id, msg);
+					var reply = result? "Custom welcome message saved!" : "Set welcome message failed";
 					await Bot.SendTextMessageAsync(message.Chat.Id, reply + Util.RandEmoji(), false, false, message.MessageId);
 				}
 				return;
